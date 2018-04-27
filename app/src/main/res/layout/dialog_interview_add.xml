@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/company_name"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/et_company" android:hint="@string/hint_company" android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/address"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/et_address" android:hint="@string/hint_address" android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/calendar"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/et_calendar" android:focusable="false" android:hint="@string/hint_calendar" android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/date"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/et_date" android:focusable="false" android:hint="@string/hint_date"  android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:text="@string/phone"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"/>
+            <EditText android:id="@+id/et_phone" android:hint="@string/hint_phone" android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+</LinearLayout>

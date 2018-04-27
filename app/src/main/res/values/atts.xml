@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ActionBarView">
+        <!--标题文字-->
+        <attr name="titleText" format="string"/>
+        <!--标题文字大小-->
+        <attr name="titleTextSize" format="dimension"/>
+        <!--标题文字颜色-->
+        <attr name="titleTextColor" format="color"/>
+
+        <attr name="leftTextColor" format="color"/>
+        <attr name="leftBackground" format="color|reference"/>
+        <attr name="leftText" format="string"/>
+        <attr name="leftWidth" format="dimension"/>
+        <attr name="leftHeight" format="dimension"/>
+
+        <attr name="rightTextColor" format="color"/>
+        <attr name="rightBackground" format="color|reference"/>
+        <attr name="rightText" format="string"/>
+        <attr name="rightWidth" format="dimension"/>
+        <attr name="rightHeight" format="dimension"/>
+    </declare-styleable>
+</resources>

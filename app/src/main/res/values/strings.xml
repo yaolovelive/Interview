@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">面试助手</string>
+    <string name="title_main">便签</string>
+    <string name="add">添加</string>
+    <string name="company_name">公司名称</string>
+    <string name="cancel">取消</string>
+    <string name="address">地址</string>
+    <string name="calendar">日期</string>
+    <string name="date">时间</string>
+    <string name="phone">电话</string>
+    <string name="add_item">添加项</string>
+    <string name="tryagain">再按一次退出</string>
+    <string name="hint_company">请输入公司名称</string>
+    <string name="hint_address">请输入面试地址</string>
+    <string name="hint_calendar">点击选择面试的日期</string>
+    <string name="hint_date">请选择面试的时间</string>
+    <string name="hint_phone">请输入对方联系电话(非必须)</string>
+</resources>
