@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                     Calendar calendar1 = Calendar.getInstance();
                     calendar1.setTime(new Date());
                     TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, (x, h, m) -> {
-                        et_date.setText(h + ":" + m);
+                        et_date.setText(h<10?"0"+h:h + ":" + (m<10?"0"+m:m));
                     }, calendar1.get(Calendar.HOUR_OF_DAY), calendar1.get(Calendar.MINUTE), true);
                     timePickerDialog.show();
                     break;

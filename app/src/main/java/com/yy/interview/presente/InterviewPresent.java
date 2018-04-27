@@ -1,5 +1,7 @@
 package com.yy.interview.presente;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,6 +15,7 @@ import com.yy.interview.model.util.DatabaseHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +40,7 @@ public class InterviewPresent {
         this.handler = handler;
     }
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public void changeState(Integer pageNo, Integer pageSize, IInterviewDao.OrderBy orderBy) {
         new Thread(() -> {
@@ -76,6 +79,7 @@ public class InterviewPresent {
             Long l = interviewDao.addInterview(db, companyName, interviewTime, interviewAddress, linkedPhone);
             if (l > 0) {
                 handler.post(() -> callback.addCallback(true));
+                addAlarm(interviewTime);
             } else {
                 handler.post(() -> callback.addCallback(false));
             }
@@ -84,6 +88,22 @@ public class InterviewPresent {
 
     public void cancalInterView(final Integer id) {
         new Thread(() -> interviewDao.delById(db, id)).start();
+    }
+
+    public void addAlarm(String interviewTime){
+        Calendar calendar = Calendar.getInstance();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        try {
+            calendar.setTime(dateFormat.parse(interviewTime));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calendar.set(Calendar.HOUR_OF_DAY,calendar.get(Calendar.HOUR_OF_DAY) - 3);
+        Intent broadcast = new Intent("receiver.notify");
+        broadcast.putExtra("date",interviewTime);
+        broadcast.addCategory(Intent.CATEGORY_DEFAULT);
+        PendingIntent pi = PendingIntent.getBroadcast(context.getApplicationContext(),0,broadcast,0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),pi);
     }
 
 }

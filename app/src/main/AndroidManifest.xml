@@ -34,5 +34,13 @@
         <!--定位Service-->
         <service android:name="com.amap.api.location.APSService"
             android:enabled="true"></service>
+
+        <!--消息提醒广播-->
+        <receiver android:name=".broadcast.AlarmBroadcast">
+            <intent-filter>
+                <action android:name="receiver.notify"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
