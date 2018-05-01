@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.util.Log;
@@ -30,6 +31,8 @@ public class InterviewPresent {
     private IInterviewPresent callback;
     private SQLiteDatabase db;
 
+
+    private SharedPreferences config;
     private Handler handler;
 
     public InterviewPresent(Context context, IInterviewPresent callback, Handler handler) {
@@ -38,6 +41,7 @@ public class InterviewPresent {
         DatabaseHelper databaseHelper = new DatabaseHelper(context, "interviewdb", null, 3);
         db = databaseHelper.getReadableDatabase();
         this.handler = handler;
+        config = context.getSharedPreferences("config",0);
     }
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -91,6 +95,7 @@ public class InterviewPresent {
     }
 
     public void addAlarm(String interviewTime){
+        int ts = config.getInt("ts",3);
         Calendar calendar = Calendar.getInstance();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         try {
@@ -98,7 +103,7 @@ public class InterviewPresent {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        calendar.set(Calendar.HOUR_OF_DAY,calendar.get(Calendar.HOUR_OF_DAY) - 3);
+        calendar.set(Calendar.HOUR_OF_DAY,calendar.get(Calendar.HOUR_OF_DAY) - ts);
         Intent broadcast = new Intent("receiver.notify");
         broadcast.putExtra("date",interviewTime);
         broadcast.addCategory(Intent.CATEGORY_DEFAULT);

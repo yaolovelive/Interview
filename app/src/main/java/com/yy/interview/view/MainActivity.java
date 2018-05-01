@@ -6,9 +6,11 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.icu.text.TimeZoneFormat;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -27,6 +31,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        drawerLayout = (DrawerLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.layout_main,null);
+        drawerLayout = (DrawerLayout) LayoutInflater.from(getApplicationContext()).inflate(R.layout.layout_main, null);
         setContentView(drawerLayout);
         init();
         initView();
@@ -159,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(interviews.size() > pageSize){
-                    if(lv_interview.getLastVisiblePosition() == totalItemCount - 1){
-                        interviewPresent.changeState(++pageNo,pageSize,orderBy);
+                if (interviews.size() > pageSize) {
+                    if (lv_interview.getLastVisiblePosition() == totalItemCount - 1) {
+                        interviewPresent.changeState(++pageNo, pageSize, orderBy);
                     }
                 }
             }
@@ -179,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("加载中...请稍后");
         progressDialog.setCancelable(false);
+        config = getSharedPreferences("config", 0);
     }
 
     /**
@@ -224,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                     Calendar calendar1 = Calendar.getInstance();
                     calendar1.setTime(new Date());
                     TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this, (x, h, m) -> {
-                        et_date.setText(h<10?"0"+h:h + ":" + (m<10?"0"+m:m));
+                        et_date.setText(h < 10 ? "0" + h : h + ":" + (m < 10 ? "0" + m : m));
                     }, calendar1.get(Calendar.HOUR_OF_DAY), calendar1.get(Calendar.MINUTE), true);
                     timePickerDialog.show();
                     break;
@@ -250,13 +256,14 @@ public class MainActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
             Intent intent = new Intent("activity.getway");
-            intent.putExtra("locationInfo",locationEntity);
+            intent.putExtra("locationInfo", locationEntity);
             startActivity(intent);
         }
     }
 
     private AlertDialog chooseDislog = null;
     private AlertDialog dialog_del = null;
+
     public AlertDialog chooseDialog(final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setItems(new String[]{"路径规划", "取消面试"}, (x, y) -> {
@@ -272,17 +279,17 @@ public class MainActivity extends AppCompatActivity {
                 }
                 progressDialog.show();
                 new Thread(() -> geocodeSearchPresent.search(interviews.get(position).getInterviewAddress())).start();
-            }else if(y == 1){
+            } else if (y == 1) {
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
                 builder1.setTitle("删除提示");
                 builder1.setMessage("确认删除该该条记录?");
-                builder1.setNegativeButton("确认删除", (a,b)->{
+                builder1.setNegativeButton("确认删除", (a, b) -> {
                     interviewPresent.cancalInterView(interviews.get(position).getId());
                     showToast("删除成功!");
-                    interviewPresent.getNotInterviews(pageNo,pageSize,orderBy);
+                    interviewPresent.getNotInterviews(pageNo, pageSize, orderBy);
                     dialog_del.dismiss();
                 });
-                builder1.setPositiveButton("点错了",(a,b)->{
+                builder1.setPositiveButton("点错了", (a, b) -> {
                     dialog_del.dismiss();
                 });
                 dialog_del = builder1.create();
@@ -342,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
             tv_address.setText(interviews.get(position).getInterviewAddress() + "");
             tv_time.setText(interviews.get(position).getInterviewTime() + "");
             tv_phone.setText(interviews.get(position).getLinkedPhone() + "");
-            tv_state.setText(getState(interviews.get(position).getState(),tv_state) + "");
+            tv_state.setText(getState(interviews.get(position).getState(), tv_state) + "");
             return view;
         }
     }
@@ -353,16 +360,16 @@ public class MainActivity extends AppCompatActivity {
      * @param state
      * @return
      */
-    private String getState(int state,TextView tv) {
+    private String getState(int state, TextView tv) {
         switch (state) {
             case 0:
-                tv.setTextColor(Color.argb(0xff,0xff,0,0));
+                tv.setTextColor(Color.argb(0xff, 0xff, 0, 0));
                 return "待面试";
             case 1:
-                tv.setTextColor(Color.argb(0xff,0,0xff,0));
+                tv.setTextColor(Color.argb(0xff, 0, 0xff, 0));
                 return "面试中";
             case 2:
-                tv.setTextColor(Color.argb(0xff,0,0,0));
+                tv.setTextColor(Color.argb(0xff, 0, 0, 0));
                 return "已面试";
         }
         return "????";
@@ -432,7 +439,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(view_menu)){
+        if (drawerLayout.isDrawerOpen(view_menu)) {
             drawerLayout.closeDrawer(view_menu);
             return;
         }
@@ -475,5 +482,52 @@ public class MainActivity extends AppCompatActivity {
             timerExit.cancel();
             timerExit = null;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0x001, 0x001, 2, "通知提醒提前时间");
+        menu.add(0x002, 0x002, 1, "开源地址");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private SharedPreferences config;
+    private AlertDialog numDialog = null;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 0x002:
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                Uri uri = Uri.parse("https://github.com/yaolovelive/Interview");
+                intent.setData(uri);
+                startActivity(intent);
+                break;
+            case 0x001:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                int ts = config.getInt("ts", 3);
+                NumberPicker numberPicker = new NumberPicker(MainActivity.this);
+                numberPicker.setMaxValue(6);
+                numberPicker.setMinValue(1);
+                numberPicker.setValue(ts);
+                /*numberPicker.setOnValueChangedListener((x, y, z) -> {
+                    SharedPreferences.Editor editor = config.edit();
+                    editor.putInt("ts", z);
+                    editor.commit();
+                });*/
+                numberPicker.setFocusable(true);
+                numberPicker.setFocusableInTouchMode(true);
+                builder.setView(numberPicker);
+                builder.setPositiveButton("确定",(x,y)->{
+                    SharedPreferences.Editor editor = config.edit();
+                    editor.putInt("ts", numberPicker.getValue());
+                    editor.commit();
+                });
+                builder.setNegativeButton("关闭",(x,y)->numDialog.dismiss());
+                numDialog = builder.create();
+                numDialog.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
