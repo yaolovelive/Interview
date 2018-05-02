@@ -35,6 +35,7 @@ public class ActionBarView extends RelativeLayout {
     public ActionBarView(Context context, AttributeSet attrs) {
         super(context, attrs,0);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ActionBarView);
+
         colorLeft = ta.getColor(R.styleable.ActionBarView_leftTextColor,0);
         backgroundLeft = ta.getDrawable(R.styleable.ActionBarView_leftBackground);
         textLeft = ta.getString(R.styleable.ActionBarView_leftText);
@@ -63,7 +64,7 @@ public class ActionBarView extends RelativeLayout {
         btnRight.setText(textRight);
         btnRight.setTextColor(colorRight);
         btnRight.setBackground(backgroundRight);
-        btnRight.setGravity(Gravity.RIGHT);
+//        btnRight.setGravity(Gravity.RIGHT);
 
         tvTitle.setText(textTitle);
         tvTitle.setTextSize(sizeTitle);

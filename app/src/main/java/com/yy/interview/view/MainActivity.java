@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.icu.text.TimeZoneFormat;
 import android.net.Uri;
@@ -19,6 +20,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,6 +38,7 @@ import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.amap.api.services.geocoder.GeocodeAddress;
 import com.amap.api.services.geocoder.GeocodeResult;
@@ -102,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText et_phone;
     private GeocodeSearchPresent geocodeSearchPresent;
 
+    private AlertDialog menuDialog;
+
+
     /**
      * 初始化控件
      */
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         lv_interview.setOnItemClickListener(listener);
         lv_interview.setAdapter(adapter);
         barView = findViewById(R.id.view_actionBar);
+
         barView.setBtnRightOnClickListener((v) -> {
             if (dialog == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -156,6 +164,44 @@ public class MainActivity extends AppCompatActivity {
                 interviewPresent.addInterview(company, calendar + " " + date, address, phone);
             });
         });
+        barView.setBtnLeftOnClickListener((v) -> {
+            if (menuDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setSingleChoiceItems(new String[]{"开源地址", "通知提醒提前时间"}, -1, (x, y) -> {
+                    switch (y) {
+                        case 0:
+                            menuDialog.dismiss();
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            Uri uri = Uri.parse("https://github.com/yaolovelive/Interview");
+                            intent.setData(uri);
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            menuDialog.dismiss();
+                            AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                            int ts = config.getInt("ts", 3);
+                            NumberPicker numberPicker = new NumberPicker(MainActivity.this);
+                            numberPicker.setMaxValue(6);
+                            numberPicker.setMinValue(1);
+                            numberPicker.setValue(ts);
+                            numberPicker.setFocusable(true);
+                            numberPicker.setFocusableInTouchMode(true);
+                            builder1.setView(numberPicker);
+                            builder1.setPositiveButton("确定", (a, b) -> {
+                                SharedPreferences.Editor editor = config.edit();
+                                editor.putInt("ts", numberPicker.getValue());
+                                editor.commit();
+                            });
+                            builder1.setNegativeButton("关闭", (a, b) -> numDialog.dismiss());
+                            numDialog = builder1.create();
+                            numDialog.show();
+                            break;
+                    }
+                });
+                menuDialog = builder.create();
+            }
+            menuDialog.show();
+        });
         lv_interview.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -171,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     /**
@@ -510,24 +557,20 @@ public class MainActivity extends AppCompatActivity {
                 numberPicker.setMaxValue(6);
                 numberPicker.setMinValue(1);
                 numberPicker.setValue(ts);
-                /*numberPicker.setOnValueChangedListener((x, y, z) -> {
-                    SharedPreferences.Editor editor = config.edit();
-                    editor.putInt("ts", z);
-                    editor.commit();
-                });*/
                 numberPicker.setFocusable(true);
                 numberPicker.setFocusableInTouchMode(true);
                 builder.setView(numberPicker);
-                builder.setPositiveButton("确定",(x,y)->{
+                builder.setPositiveButton("确定", (x, y) -> {
                     SharedPreferences.Editor editor = config.edit();
                     editor.putInt("ts", numberPicker.getValue());
                     editor.commit();
                 });
-                builder.setNegativeButton("关闭",(x,y)->numDialog.dismiss());
+                builder.setNegativeButton("关闭", (x, y) -> numDialog.dismiss());
                 numDialog = builder.create();
                 numDialog.show();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -19,6 +19,8 @@
             android:background="@color/transaction"
             action:rightText="@string/add"
             action:rightTextColor="@color/black"
+            action:leftText="@string/menu"
+            action:leftTextColor="@color/black"
             android:id="@+id/view_actionBar">
         </com.yy.interview.view.ActionBarView>
         <LinearLayout
@@ -36,6 +38,7 @@
                 android:background="@color/transaction">
             </ListView>
         </HorizontalScrollView>
+
     </LinearLayout>
 
 
